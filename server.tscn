@@ -1,0 +1,196 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+
+script/source = "extends Control
+
+var _peer = ENetPacketPeer.new()
+var _clients = []
+var turn = 0
+
+func _ready():
+    _peer.create_server(4444)
+    get_node(\"ENetNode\").connect(\"network_peer_connected\", self, \"client_connected\")
+    get_node(\"ENetNode\").connect(\"peer_packet\", self, \"client_msg\")
+    get_node(\"ENetNode\").set_network_peer(_peer)
+
+func client_connected(id):
+    _clients.append(id)
+
+func client_msg(id, ch, msg):
+    print(\"msg\")
+    var pos = bytes2var(msg)
+    if id != _clients[turn]:
+        print(\"Not your turn!\")
+    elif get_node(\"GridContainer\").get_children()[pos].get_text() != \"\":
+        print(\"Not empty!\")
+    else:
+        var cid = _clients[turn]
+        var text = \"X\"
+        if turn == 0:
+            text = \"O\"
+        get_node(\"GridContainer\").get_children()[pos].set_text(text)
+        turn += 1
+        if turn >= _clients.size():
+            turn = 0
+        get_node(\"ENetNode\").broadcast(var2bytes([pos, text]), 0)"
+
+[node name="Server" type="Control"]
+
+anchor_right = 1
+anchor_bottom = 1
+rect_clip_content = false
+mouse_filter = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = SubResource( 1 )
+
+[node name="GridContainer" type="GridContainer" parent="."]
+
+anchor_right = 1
+anchor_bottom = 1
+rect_clip_content = false
+mouse_filter = 1
+columns = 3
+
+[node name="Button" type="Button" parent="GridContainer"]
+
+margin_right = 281.0
+margin_bottom = 107.0
+rect_clip_content = false
+mouse_filter = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+flat = false
+
+[node name="Button2" type="Button" parent="GridContainer"]
+
+margin_left = 285.0
+margin_right = 566.0
+margin_bottom = 107.0
+rect_clip_content = false
+mouse_filter = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+flat = false
+
+[node name="Button3" type="Button" parent="GridContainer"]
+
+margin_left = 570.0
+margin_right = 851.0
+margin_bottom = 107.0
+rect_clip_content = false
+mouse_filter = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+flat = false
+
+[node name="Button4" type="Button" parent="GridContainer"]
+
+margin_top = 111.0
+margin_right = 281.0
+margin_bottom = 218.0
+rect_clip_content = false
+mouse_filter = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+flat = false
+
+[node name="Button5" type="Button" parent="GridContainer"]
+
+margin_left = 285.0
+margin_top = 111.0
+margin_right = 566.0
+margin_bottom = 218.0
+rect_clip_content = false
+mouse_filter = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+flat = false
+
+[node name="Button6" type="Button" parent="GridContainer"]
+
+margin_left = 570.0
+margin_top = 111.0
+margin_right = 851.0
+margin_bottom = 218.0
+rect_clip_content = false
+mouse_filter = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+flat = false
+
+[node name="Button7" type="Button" parent="GridContainer"]
+
+margin_top = 222.0
+margin_right = 281.0
+margin_bottom = 329.0
+rect_clip_content = false
+mouse_filter = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+flat = false
+
+[node name="Button8" type="Button" parent="GridContainer"]
+
+margin_left = 285.0
+margin_top = 222.0
+margin_right = 566.0
+margin_bottom = 329.0
+rect_clip_content = false
+mouse_filter = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+flat = false
+
+[node name="Button9" type="Button" parent="GridContainer"]
+
+margin_left = 570.0
+margin_top = 222.0
+margin_right = 851.0
+margin_bottom = 329.0
+rect_clip_content = false
+mouse_filter = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+flat = false
+
+[node name="ENetNode" type="ENetNode" parent="."]
+
+
